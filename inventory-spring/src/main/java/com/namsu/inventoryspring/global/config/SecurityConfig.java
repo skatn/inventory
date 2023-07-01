@@ -30,7 +30,16 @@ public class SecurityConfig {
                 .formLogin()
                 .loginPage("/login-form")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/");
+                .defaultSuccessUrl("/")
+
+                // 로그아웃
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login-form")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll();
 
         return http.build();
     }

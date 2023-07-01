@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class LoginController {
 
-    private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final LoginService loginService;
 
     @GetMapping("/login-form")
     public String loginForm(@RequestParam(value = "error", required = false) String error,
@@ -46,10 +45,12 @@ public class LoginController {
             return "auth/joinForm";
         }
 
-        memberRepository.save(Member.builder()
-                .username(joinRequest.getUsername())
-                .password(passwordEncoder.encode(joinRequest.getPassword()))
-                .build());
+        try {
+            loginService.join(joinRequest);
+        } catch (IllegalArgumentException e) {
+            bindingResult.reject("duplicateUsername", e.getMessage());
+            return "auth/joinForm";
+        }
 
         return "redirect:/login-form";
     }
