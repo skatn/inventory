@@ -18,4 +18,8 @@ public class StockMovementController {
         return "movement/outbound";
     }
 
+    @GetMapping("/movement")
+    public String movementLog() {
+        return "movement/movementLog";
+    }
 }

@@ -18,8 +18,8 @@ public class SecurityConfig {
                 .antMatchers("/login-form").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-//                .anyRequest().authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
+//                .anyRequest().permitAll()
 
                 // h2db console 엑박 방지
                 .and().headers()

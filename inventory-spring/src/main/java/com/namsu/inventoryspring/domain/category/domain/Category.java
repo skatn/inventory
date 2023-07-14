@@ -26,12 +26,16 @@ public class Category extends BaseTimeEntity {
 
     @CreatedBy
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "created_by", updatable = false)
     private Member member;
 
     @Builder
     private Category(String name, Member member) {
         this.name = name;
         this.member = member;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
     }
 }
