@@ -1,5 +1,6 @@
 package com.namsu.inventoryspring.domain.stockmovement.domain;
 
+import com.namsu.inventoryspring.domain.item.domain.Item;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,10 +31,14 @@ public class StockMovement {
     @Enumerated(EnumType.STRING)
     private MovementType type;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
     @Builder
-    private StockMovement(long quantity, LocalDateTime createdDate, MovementType type) {
+    private StockMovement(Item item, long quantity, MovementType type) {
+        this.item = item;
         this.quantity = quantity;
-        this.createdDate = createdDate;
         this.type = type;
     }
 }

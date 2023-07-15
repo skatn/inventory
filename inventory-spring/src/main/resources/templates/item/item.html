@@ -21,23 +21,28 @@
 
         <a href="#" class="btn btn-danger ms-auto">삭제</a>
         <a href="#" class="btn btn-primary ms-3">수정</a>
-        <a href="#" class="btn btn-primary ms-3">목록으로</a>
+        <a href="#" class="btn btn-primary ms-3" th:href="@{/}">목록</a>
     </div>
 
     <form action="#">
         <div class="mb-3">
             <label class="form-label">분류</label>
-            <input class="form-control" type="text" value="전자기기" disabled readonly>
+            <input class="form-control" type="text" value="전자기기" disabled readonly th:value="${item.category.name}">
         </div>
 
         <div class="mb-3">
             <label for="name" class="form-label">제품명</label>
-            <input id="name" class="form-control" type="text" value="모니터" disabled readonly>
+            <input id="name" class="form-control" type="text" value="모니터" disabled readonly th:value="${item.name}">
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity" class="form-label">수량</label>
+            <input id="quantity" class="form-control" type="number" value="0" disabled readonly th:value="${item.quantity}">
         </div>
 
         <div class="mb-5">
             <label for="unit" class="form-label">단위</label>
-            <input id="unit" class="form-control" type="text" value="개" disabled readonly>
+            <input id="unit" class="form-control" type="text" value="개" disabled readonly th:value="${item.unit}">
         </div>
     </form>
 
@@ -65,41 +70,41 @@
     <table class="table table-hover text-center">
         <thead>
         <tr>
+            <th scope="col" width="10%">날짜</th>
             <th scope="col" width="20%">분류</th>
-            <th scope="col" width="60%">제품명</th>
+            <th scope="col" width="40%">제품명</th>
             <th scope="col" width="10%">수량</th>
             <th scope="col" width="10%">단위</th>
+            <th scope="col" width="10%">입/출</th>
         </tr>
         </thead>
         <tbody class="table-group-divider">
-        <tr>
-            <td>전자기기</td>
-            <td>모니터</td>
-            <td>3</td>
-            <td>개</td>
-        </tr>
-        <tr>
-            <td>전자기기</td>
-            <td>키보드</td>
-            <td>3</td>
-            <td>개</td>
+        <tr th:each="movement : ${logPage.content}">
+            <td th:text="${#dates.format(movement.createdDate, 'yyyy-MM-dd')}">2000-01-01</td>
+            <td th:text="${movement.item.category.name}">전자기기</td>
+            <td th:text="${movement.item.name}">모니터</td>
+            <td th:text="${movement.item.quantity}">3</td>
+            <td th:text="${movement.item.unit}">개</td>
+            <td th:text="${movement.type.displayName}">입고</td>
         </tr>
         </tbody>
     </table>
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
+    <nav aria-label="Page navigation" th:if="${logPage.totalPages > 1}">
+        <ul class="pagination justify-content-center"
+            th:with="max=5, start=${(logPage.number / max) * max + 1}, end=${(logPage.totalPages == 0 ? 1 : (start + (max - 1) < logPage.totalPages ? start + (max - 1) : logPage.totalPages))}">
+            <li class="page-item" th:if="${start > max}">
+                <a class="page-link" href="#" aria-label="Previous" th:href="@{/items/{itemId}(itemId=${itemId}, page=${start - max})}">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
 
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
+            <li class="page-item" th:each="num : ${#numbers.sequence(start, end)}">
+                <a class="page-link" href="#" th:text="${num}" th:href="@{/items/{itemId}(itemId=${itemId}, page=${num - 1})}" th:classappend="${num == logPage.number + 1 ? 'active' : ''}">1</a>
+            </li>
+
+            <li class="page-item" th:if="${end < logPage.totalPages}">
+                <a class="page-link" href="#" aria-label="Next" th:href="@{/items/{itemId}(itemId=${itemId}, page=${start + max})}">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

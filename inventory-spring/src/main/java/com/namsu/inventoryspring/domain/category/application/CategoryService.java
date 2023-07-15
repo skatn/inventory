@@ -20,6 +20,11 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional(readOnly = true)
+    public Category getCategory(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("분류를 찾을 수 없습니다."));
+    }
+
     public Long addCategory(Member member, CreateCategoryForm form) {
         Category category = Category.builder()
                 .name(form.getName())

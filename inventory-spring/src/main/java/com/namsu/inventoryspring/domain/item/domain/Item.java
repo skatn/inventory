@@ -21,7 +21,6 @@ public class Item extends BaseTimeEntity {
     private Long id;
 
     private String name;
-    private String description;
     private long quantity;
     private String unit;
 
@@ -34,12 +33,22 @@ public class Item extends BaseTimeEntity {
     private Category category;
 
     @Builder
-    private Item(String name, String description, long quantity, String unit, Member member, Category category) {
+    private Item(String name, long quantity, String unit, Member member, Category category) {
         this.name = name;
-        this.description = description;
         this.quantity = quantity;
         this.unit = unit;
         this.member = member;
         this.category = category;
+    }
+
+    public void addQuantity(long quantity) {
+        this.quantity += quantity;
+    }
+
+    public void subQuantity(long quantity) {
+        if (this.quantity - quantity < 0) {
+            throw new IllegalArgumentException("현재 수량보다 많은 수를 출고할 수 없습니다.");
+        }
+        this.quantity -= quantity;
     }
 }
