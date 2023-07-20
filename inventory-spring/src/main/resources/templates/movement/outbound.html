@@ -17,24 +17,28 @@
         </h3>
     </div>
 
-    <form action="#">
+    <form action="#" th:object="${form}" th:action="@{/movement/outbound}" th:method="post">
         <div class="mb-3">
             <label class="form-label">제품</label>
-            <select class="form-select">
-                <option selected>제품을 선택해주세요.</option>
-                <option value="1">모니터</option>
-                <option value="2">키보드</option>
-                <option value="3">마우스</option>
+            <select class="form-select" th:field="*{itemId}" th:errorclass="is-invalid">
+                <option value="" selected>제품을 선택해주세요.</option>
+                <option value="1" th:each="item : ${items}" th:value="${item.id}" th:text="${item.name}">모니터</option>
             </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('itemId')}" th:errors="*{itemId}">
+                Invalid Item
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="name" class="form-label">수량</label>
-            <input id="name" class="form-control" type="number" min="0">
+            <input id="name" class="form-control" type="number" min="0" th:field="*{quantity}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">
+                Invalid Quantity
+            </div>
         </div>
 
         <div class="d-flex justify-content-end">
-            <a href="#" class="btn btn-secondary me-3" th:href="@{/static}">취소</a>
+            <a href="#" class="btn btn-secondary me-3" th:href="@{/}">취소</a>
             <button type="submit" class="btn btn-primary">확인</button>
         </div>
     </form>

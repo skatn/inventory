@@ -3,6 +3,7 @@ package com.namsu.inventoryspring.domain.item.application;
 import com.namsu.inventoryspring.domain.category.application.CategoryService;
 import com.namsu.inventoryspring.domain.item.dao.ItemRepository;
 import com.namsu.inventoryspring.domain.item.domain.Item;
+import com.namsu.inventoryspring.domain.item.dto.ItemUpdateForm;
 import com.namsu.inventoryspring.domain.item.dto.ItemsNewForm;
 import com.namsu.inventoryspring.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,13 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Page<Item> getItems(Member member, Pageable pageable) {
         return itemRepository.findAllByMember(member, pageable);
+    }
+
+    public void updateItem(Member member, Long itemId, ItemUpdateForm form) {
+        Item item = itemRepository.findByIdAndMember(itemId, member).orElseThrow(() -> new IllegalArgumentException("제품을 찾을 수 없습니다."));
+
+        item.changeName(form.getItemName());
+        item.changeCategory(categoryService.getCategory(form.getCategoryId()));
+        item.changeUnit(form.getUnit());
     }
 }

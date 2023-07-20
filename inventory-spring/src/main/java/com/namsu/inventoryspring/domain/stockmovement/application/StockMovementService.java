@@ -7,6 +7,7 @@ import com.namsu.inventoryspring.domain.stockmovement.dao.StockMovementRepositor
 import com.namsu.inventoryspring.domain.stockmovement.domain.MovementType;
 import com.namsu.inventoryspring.domain.stockmovement.domain.StockMovement;
 import com.namsu.inventoryspring.domain.stockmovement.dto.InboundForm;
+import com.namsu.inventoryspring.domain.stockmovement.dto.OutboundForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,19 @@ public class StockMovementService {
 
         StockMovement stockMovement = StockMovement.builder()
                 .type(MovementType.INBOUND)
+                .quantity(form.getQuantity())
+                .item(item)
+                .build();
+
+        stockMovementRepository.save(stockMovement);
+    }
+
+    public void outbound(Member member, OutboundForm form) {
+        Item item = itemService.getItem(member, form.getItemId());
+        item.subQuantity(form.getQuantity());
+
+        StockMovement stockMovement = StockMovement.builder()
+                .type(MovementType.OUTBOUND)
                 .quantity(form.getQuantity())
                 .item(item)
                 .build();

@@ -51,4 +51,16 @@ public class Item extends BaseTimeEntity {
         }
         this.quantity -= quantity;
     }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public void changeCategory(Category category) {
+        this.category = category;
+    }
 }

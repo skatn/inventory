@@ -20,7 +20,7 @@
         </h3>
 
         <a href="#" class="btn btn-danger ms-auto">삭제</a>
-        <a href="#" class="btn btn-primary ms-3">수정</a>
+        <a href="#" class="btn btn-primary ms-3" th:href="@{/items/{itemId}/update(itemId=${itemId})}">수정</a>
         <a href="#" class="btn btn-primary ms-3" th:href="@{/}">목록</a>
     </div>
 
@@ -80,10 +80,10 @@
         </thead>
         <tbody class="table-group-divider">
         <tr th:each="movement : ${logPage.content}">
-            <td th:text="${#dates.format(movement.createdDate, 'yyyy-MM-dd')}">2000-01-01</td>
+            <td th:text="${#temporals.format(movement.createdDate, 'yyyy-MM-dd')}">2000-01-01</td>
             <td th:text="${movement.item.category.name}">전자기기</td>
             <td th:text="${movement.item.name}">모니터</td>
-            <td th:text="${movement.item.quantity}">3</td>
+            <td th:text="${movement.quantity}">3</td>
             <td th:text="${movement.item.unit}">개</td>
             <td th:text="${movement.type.displayName}">입고</td>
         </tr>

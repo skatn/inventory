@@ -4,6 +4,7 @@ import com.namsu.inventoryspring.domain.category.application.CategoryService;
 import com.namsu.inventoryspring.domain.category.domain.Category;
 import com.namsu.inventoryspring.domain.item.application.ItemService;
 import com.namsu.inventoryspring.domain.item.domain.Item;
+import com.namsu.inventoryspring.domain.item.dto.ItemUpdateForm;
 import com.namsu.inventoryspring.domain.item.dto.ItemsNewForm;
 import com.namsu.inventoryspring.domain.member.domain.Member;
 import com.namsu.inventoryspring.domain.stockmovement.application.StockMovementService;
@@ -88,7 +89,39 @@ public class ItemController {
     }
 
     @GetMapping("/items/{itemId}/update")
-    public String updateItemForm(@PathVariable("itemId") long itemId) {
+    public String updateItemForm(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                 @PathVariable("itemId") long itemId,
+                                 Model model) {
+
+        Item item = itemService.getItem(principalDetails.getMember(), itemId);
+
+        ItemUpdateForm form = new ItemUpdateForm();
+        form.setCategoryId(item.getCategory().getId());
+        form.setItemName(item.getName());
+        form.setUnit(item.getUnit());
+        model.addAttribute("form", form);
+
+        List<Category> categories = categoryService.getCategories(principalDetails.getMember());
+        model.addAttribute("categories", categories);
+
         return "item/updateItem";
+    }
+
+    @PostMapping("/items/{itemId}/update")
+    public String updateItem(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                             @PathVariable("itemId") long itemId,
+                             @Validated @ModelAttribute("form") ItemUpdateForm form,
+                             BindingResult bindingResult,
+                             Model model) {
+
+        if (bindingResult.hasErrors()) {
+            List<Category> categories = categoryService.getCategories(principalDetails.getMember());
+            model.addAttribute("categories", categories);
+
+            return "item/updateItem";
+        }
+
+        itemService.updateItem(principalDetails.getMember(), itemId, form);
+        return "redirect:/items/{itemId}";
     }
 }

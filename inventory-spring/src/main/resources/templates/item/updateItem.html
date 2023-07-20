@@ -17,29 +17,41 @@
         </h3>
     </div>
 
-    <form action="#">
+    <form action="#" th:action="@{/items/{itemId}/update(itemId=${itemId})}" th:method="post" th:object="${form}">
         <div class="mb-3">
             <label class="form-label">분류</label>
-            <select class="form-select">
-                <option selected>분류</option>
-                <option value="1">전자기기</option>
-                <option value="2">잡동사니</option>
-                <option value="3">식재료</option>
+            <select class="form-select" th:field="*{categoryId}" th:errorclass="is-invalid">
+                <option value="" selected>분류</option>
+                <option value="1"
+                        th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}">전자기기
+                </option>
             </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}" >
+                Invalid Category
+            </div>
+
         </div>
 
         <div class="mb-3">
             <label for="name" class="form-label">제품명</label>
-            <input id="name" class="form-control">
+            <input id="name" class="form-control" th:field="*{itemName}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}" >
+                Invalid Name
+            </div>
         </div>
 
         <div class="mb-5">
             <label for="unit" class="form-label">단위</label>
-            <input id="unit" class="form-control">
+            <input id="unit" class="form-control" th:field="*{unit}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}" >
+                Invalid Unit
+            </div>
         </div>
 
         <div class="d-flex justify-content-end">
-            <a href="#" class="btn btn-secondary me-3" th:href="@{/static}">취소</a>
+            <a href="#" class="btn btn-secondary me-3" th:href="@{/items/{itemId}(itemId=${itemId})}">취소</a>
             <button type="submit" class="btn btn-primary">적용</button>
         </div>
     </form>
