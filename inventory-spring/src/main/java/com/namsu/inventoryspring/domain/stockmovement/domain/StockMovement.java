@@ -41,4 +41,27 @@ public class StockMovement {
         this.quantity = quantity;
         this.type = type;
     }
+
+    public void changeQuantity(long quantity) {
+
+        if(type == MovementType.INBOUND) {
+            if (this.quantity > quantity) {
+                item.subQuantity(this.quantity - quantity);
+            }
+            else {
+                item.addQuantity(quantity - this.quantity);
+            }
+        }
+        else {
+            if (this.quantity > quantity) {
+                item.addQuantity(this.quantity - quantity);
+            }
+            else {
+                item.subQuantity(quantity - this.quantity);
+            }
+        }
+
+
+        this.quantity = quantity;
+    }
 }

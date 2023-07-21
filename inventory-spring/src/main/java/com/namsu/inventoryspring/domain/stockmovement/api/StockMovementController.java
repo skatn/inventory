@@ -3,7 +3,9 @@ package com.namsu.inventoryspring.domain.stockmovement.api;
 import com.namsu.inventoryspring.domain.item.application.ItemService;
 import com.namsu.inventoryspring.domain.item.domain.Item;
 import com.namsu.inventoryspring.domain.stockmovement.application.StockMovementService;
+import com.namsu.inventoryspring.domain.stockmovement.domain.StockMovement;
 import com.namsu.inventoryspring.domain.stockmovement.dto.InboundForm;
+import com.namsu.inventoryspring.domain.stockmovement.dto.StockMovementUpdateForm;
 import com.namsu.inventoryspring.domain.stockmovement.dto.OutboundForm;
 import com.namsu.inventoryspring.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -49,6 +52,47 @@ public class StockMovementController {
         }
 
         stockMovementService.inbound(principalDetails.getMember(), form);
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/movement/{movementId}/update")
+    public String inboundUpdateForm(@PathVariable("movementId") long movementId, Model model) {
+
+        StockMovement stockMovement = stockMovementService.getLog(movementId);
+        model.addAttribute("item", stockMovement.getItem());
+        model.addAttribute("form", new StockMovementUpdateForm());
+        model.addAttribute("title", stockMovement.getType().getDisplayName());
+
+        return "movement/updateMovement";
+    }
+
+    @PostMapping("/movement/{movementId}/update")
+    public String update(@PathVariable("movementId") long movementId,
+                         @Validated @ModelAttribute("form") StockMovementUpdateForm form,
+                         BindingResult bindingResult,
+                         Model model){
+
+        if (bindingResult.hasErrors()) {
+            StockMovement stockMovement = stockMovementService.getLog(movementId);
+            model.addAttribute("item", stockMovement.getItem());
+            model.addAttribute("title", stockMovement.getType().getDisplayName());
+
+            return "movement/updateMovement";
+        }
+
+
+        try {
+            stockMovementService.update(movementId, form);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().equals("현재 수량보다 많은 수를 출고할 수 없습니다.")) {
+                StockMovement stockMovement = stockMovementService.getLog(movementId);
+                model.addAttribute("item", stockMovement.getItem());
+                model.addAttribute("title", stockMovement.getType().getDisplayName());
+                bindingResult.rejectValue("quantity", "Invalid Quantity", e.getMessage());
+                return "movement/updateMovement";
+            }
+        }
 
         return "redirect:/";
     }

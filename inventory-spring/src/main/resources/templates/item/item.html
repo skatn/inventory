@@ -71,11 +71,12 @@
         <thead>
         <tr>
             <th scope="col" width="10%">날짜</th>
-            <th scope="col" width="20%">분류</th>
-            <th scope="col" width="40%">제품명</th>
+            <th scope="col" width="15%">분류</th>
+            <th scope="col" width="35%">제품명</th>
             <th scope="col" width="10%">수량</th>
             <th scope="col" width="10%">단위</th>
             <th scope="col" width="10%">입/출</th>
+            <th scope="col" width="10%"></th>
         </tr>
         </thead>
         <tbody class="table-group-divider">
@@ -86,6 +87,7 @@
             <td th:text="${movement.quantity}">3</td>
             <td th:text="${movement.item.unit}">개</td>
             <td th:text="${movement.type.displayName}">입고</td>
+            <td><a href="#" class="btn btn-primary" th:href="@{/movement/{movementId}/update(movementId=${movement.id})}">수정</a></td>
         </tr>
         </tbody>
     </table>

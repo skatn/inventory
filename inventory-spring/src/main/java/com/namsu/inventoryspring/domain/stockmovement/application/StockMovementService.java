@@ -7,6 +7,7 @@ import com.namsu.inventoryspring.domain.stockmovement.dao.StockMovementRepositor
 import com.namsu.inventoryspring.domain.stockmovement.domain.MovementType;
 import com.namsu.inventoryspring.domain.stockmovement.domain.StockMovement;
 import com.namsu.inventoryspring.domain.stockmovement.dto.InboundForm;
+import com.namsu.inventoryspring.domain.stockmovement.dto.StockMovementUpdateForm;
 import com.namsu.inventoryspring.domain.stockmovement.dto.OutboundForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,11 @@ public class StockMovementService {
         return stockMovementRepository.findByItem(item, pageable);
     }
 
+    @Transactional(readOnly = true)
+    public StockMovement getLog(long movementId) {
+        return stockMovementRepository.findById(movementId).orElseThrow(() -> new IllegalArgumentException("입출고 로그를 조회할 수 없습니다."));
+    }
+
     public void inbound(Member member, InboundForm form) {
         Item item = itemService.getItem(member, form.getItemId());
         item.addQuantity(form.getQuantity());
@@ -38,6 +44,11 @@ public class StockMovementService {
                 .build();
 
         stockMovementRepository.save(stockMovement);
+    }
+
+    public void update(long movementId, StockMovementUpdateForm form) {
+        StockMovement stockMovement = stockMovementRepository.findById(movementId).orElseThrow(() -> new IllegalArgumentException("입고 로그를 찾을 수 없습니다."));
+        stockMovement.changeQuantity(form.getQuantity());
     }
 
     public void outbound(Member member, OutboundForm form) {
