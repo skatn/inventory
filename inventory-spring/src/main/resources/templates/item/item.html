@@ -16,12 +16,33 @@
 
     <div class="d-flex align-items-center my-5">
         <h3>
-            모니터
+            제픔 상세
         </h3>
 
-        <a href="#" class="btn btn-danger ms-auto">삭제</a>
+        <button class="btn btn-danger ms-auto" data-bs-toggle="modal" data-bs-target="#deleteModal">삭제</button>
         <a href="#" class="btn btn-primary ms-3" th:href="@{/items/{itemId}/update(itemId=${itemId})}">수정</a>
         <a href="#" class="btn btn-primary ms-3" th:href="@{/}">목록</a>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">제품 삭제</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        정말로 삭제하시겠습니까?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <form action="#" th:action="@{/items/{itemId}/delete(itemId=${itemId})}" th:method="post">
+                            <button class="btn btn-danger">삭제</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <form action="#">

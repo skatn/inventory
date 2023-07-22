@@ -5,8 +5,12 @@ import com.namsu.inventoryspring.domain.stockmovement.domain.StockMovement;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 public interface StockMovementRepository extends JpaRepository<StockMovement, Long> {
 
     Page<StockMovement> findByItem(Item item, Pageable pageable);
+
+    @Modifying
+    void deleteByItemId(Long itemId);
 }

@@ -124,4 +124,12 @@ public class ItemController {
         itemService.updateItem(principalDetails.getMember(), itemId, form);
         return "redirect:/items/{itemId}";
     }
+
+    @PostMapping("/items/{itemId}/delete")
+    public String deleteItem(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                             @PathVariable("itemId") long itemId) {
+
+        itemService.deleteItem(principalDetails.getMember(), itemId);
+        return "redirect:/";
+    }
 }

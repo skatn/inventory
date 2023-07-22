@@ -6,6 +6,8 @@ import com.namsu.inventoryspring.domain.item.domain.Item;
 import com.namsu.inventoryspring.domain.item.dto.ItemUpdateForm;
 import com.namsu.inventoryspring.domain.item.dto.ItemsNewForm;
 import com.namsu.inventoryspring.domain.member.domain.Member;
+import com.namsu.inventoryspring.domain.stockmovement.application.StockMovementService;
+import com.namsu.inventoryspring.domain.stockmovement.dao.StockMovementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final CategoryService categoryService;
+    private final StockMovementRepository stockMovementRepository;
 
     public Long addItem(Member member, ItemsNewForm form) {
         Item item = Item.builder()
@@ -57,5 +60,11 @@ public class ItemService {
         item.changeName(form.getItemName());
         item.changeCategory(categoryService.getCategory(form.getCategoryId()));
         item.changeUnit(form.getUnit());
+    }
+
+    public void deleteItem(Member member, Long itemId) {
+        Item item = getItem(member, itemId);
+        stockMovementRepository.deleteByItemId(itemId);
+        itemRepository.delete(item);
     }
 }
